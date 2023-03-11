@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens/locations_details/location_details.dart';
+import 'package:weather/models/weather.dart';
 
-class CurrentWeatherPage extends StatelessWidget{
+class CurrentWeatherPage extends StatefulWidget{
   
   @override
   _CurrentWeatherPageState createState() => _CurrentWeatherPageState();
@@ -16,4 +16,15 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
       ),
     );
    }
+}
+
+Widget weatherBox(Weather _weather){
+  return Column(
+    children: <Widget>[
+      Text("${_weather.temp}*C"),
+      Text("${_weather.descriptions}"),
+      Text("Feels:${_weather.rFeels}*C"),
+      Text("H:${_weather.high}*C L:${_weather.low}*C"),
+    ]
+  );
 }
