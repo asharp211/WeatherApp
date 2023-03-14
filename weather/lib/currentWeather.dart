@@ -37,24 +37,25 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
 
   Widget weatherBox(Weather _weather) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
       Container(
         margin:  const EdgeInsets.all(10),
-        child: Text("${_weather.temp.ceil()}*F",
+        child: Text("${_weather.temp.ceil()}°F",
         textAlign: TextAlign.center,
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 55),),
       ),
       Container(
         margin:  const EdgeInsets.all(10),
-        child: Text("${_weather.descriptions}")
+        child: Text("${_weather.description}")
         ),
       Container(
         margin:  const EdgeInsets.all(10),
-        child: Text("Feels:${_weather.rFeels.ceil()}*F")
+        child: Text("Feels:${_weather.rFeels.ceil()}°F")
         ),
       Container(
         margin:  const EdgeInsets.all(10),
-        child: Text("H:${_weather.high.ceil()}*F L:${_weather.low.ceil()}*F")
+        child: Text("H:${_weather.high.ceil()}°F L:${_weather.low.ceil()}°F")
         ),
     ]
     );
