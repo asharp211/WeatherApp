@@ -1,36 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:weather/models/location.dart';
 import 'dart:convert';
 import 'package:weather/models/weather.dart';
+import 'package:weather/models/forecast.dart';
 
 class CurrentWeatherPage extends StatefulWidget {
+  final List<Location> locations;
+  const CurrentWeatherPage(this.locations);
+
   @override
-  _CurrentWeatherPageState createState() => _CurrentWeatherPageState();
+  _CurrentWeatherPageState createState() => _CurrentWeatherPageState(this.locations);
 }
 
 class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
+  final List<Location> locations;
+  // TODO: Change location or pick a location
+  final Location location;
+  Weather _weather;
+
+  _CurrentWeatherPageState(List<Location> locations)
+    : this.locations = locations, this.location = locations[0];
+
   @override
-  Widget build(BuildContext context) {
+  // TODO: implement widget
+  Widget build(BuildContext context){
     return Scaffold(
-      body: Center(
-          child: FutureBuilder(
-            builder: (context, snapshot) {
-              if (snapshot != null) {
-
-                // Removing the Null Safty by adding ? in front of the class
-                Weather? _weather = snapshot.data;
-
-                if (_weather == null) {
-                  return Text("Error getting weather");
-                } else {
-                  return weatherBox(_weather);
-                }
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
-          future: getCurrentWeather(),
-        )
+      body: ListView(
+        children: <Widget> [
+          currentWeatherViews(this.locations, this.location, this.context),
+          forecastViewHourly(this.location),
+          forecastViewDaily(this.location),
+        ],
       ),
     );
   }
@@ -65,8 +66,8 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
     // Removing Null Safty by using late
     late Weather weather;
     String city = "St. Louis";
-    //apiKey = "9b89af2c88ce9c7ac9a9f6200e249417"
     String apiKey = "9b89af2c88ce9c7ac9a9f6200e249417";
+
     var url = Uri.https('api.openweathermap.org', '/data/2.5/weather', {
               'q': city,
               'appid': apiKey,
@@ -83,4 +84,36 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
 
     return weather;
   }
+
+  Future getForecast(Location location) async {
+    late Forcast forcast;
+
+    String apiKey = "9b89af2c88ce9c7ac9a9f6200e249417";
+    String lat = location.lat;
+    String lon = location.lon;
+
+    var url = Uri.https('api.openweathermap.org', '/data/2.5/weather', {
+              'lat': lat,
+              'lon': lon,
+              'appid': apiKey,
+            });
+    
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      forcast = Forcast.fromJson(jsonDecode(response.body));
+    } else {
+      // TODO: Throw Error here
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  }
+
+
+
+
+
+
+
+
+
 }
