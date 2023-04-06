@@ -8,7 +8,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // Working on set own location or GPS Location
-  List<Location> location = [
+  List<Location> locations = [
     new Location(city: "St. Louis", country: "United States", lat: "38.6273", lon: "-90.1979")
   ];
   @override
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: CurrentWeatherPage(location),
+      home: CurrentWeatherPage(locations),
     );
   }
 }

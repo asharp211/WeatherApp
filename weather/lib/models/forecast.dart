@@ -1,7 +1,6 @@
 /*
 hourly, daily
 */
-
 import 'package:weather/models/hourly.dart';
 import 'package:weather/models/daily.dart';
 
