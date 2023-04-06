@@ -314,9 +314,13 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
 
   Future getCurrentWeather(Location location) async 
   {
+    // TODO: Make API Key secured
+
     // Removing Null Safty by using late
+    
     late Weather weather;
     String city = "St. Louis";
+
     String units = 'imperial';
     String apiKey = "9b89af2c88ce9c7ac9a9f6200e249417";
 
@@ -341,7 +345,7 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
   {
     late Forcast forcast;
 
-    String apiKey = "9b89af2c88ce9c7ac9a9f6200e249417";
+    String apiKey = "";
     String lat = location.lat;
     String lon = location.lon;
 
