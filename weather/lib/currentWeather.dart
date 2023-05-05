@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:weather/extentions.dart';
 import 'package:weather/models/location.dart';
 import 'dart:convert';
@@ -32,8 +33,8 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
       body: ListView(
         children: <Widget> [
           currentWeatherViews(this.locations, this.location, this.context),
-          forecastViewHourly(this.location),
-          forecastViewDaily(this.location),
+          forcastViewsHourly(this.location),
+          forcastViewsDaily(this.location),
         ],
       ),
     );
@@ -53,17 +54,15 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
           {
             return Text("Error getting weather");
           }
-          else
-          {
+          else{
             return Column(children: [
-              //createAppBar(locations, location, context),
+              createAppBar(location), //idea switching location createAppBar (locations, location, context),
               weatherBox(_weather),
-              //weatherDetailsBox(_weather),
+              weatherDetailBox(_weather),
             ]);
           }
         }
-        else
-        {
+        else{
           return Center(child: CircularProgressIndicator());
         }
       },
@@ -71,51 +70,43 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
     );
   }
 
-  Widget forecastViewHourly(Location location){
-    Forcast? _forcast;
+  Widget forcastViewsHourly(Location location) {
+    Forcast _forcast;
 
     return FutureBuilder(
       builder: (context, snapshot) {
-        if(snapshot.hasData){
+        if (snapshot.hasData) {
           _forcast = snapshot.data;
-
-          if (_forcast == null){
+          if (_forcast == null) {
             return Text("Error getting weather");
-          } 
-          else{
-            //return hourlyBoxes(_forcast);
+          } else {
+            return hourlyBoxes(_forcast);
           }
+        } else {
+          return Center(child: CircularProgressIndicator());
         }
-        else{
-            return Center(child: CircularProgressIndicator());
-          }
       },
       future: getForecast(location),
     );
   }
 
-  Widget forecastViewDaily(Location location)
-  {
-    Forcast? _forcast;
+  Widget forcastViewsDaily(Location location) {
+    Forcast _forcast;
 
     return FutureBuilder(
       builder: (context, snapshot) {
-        if(snapshot.hasData)
-        {
+        if (snapshot.hasData) {
           _forcast = snapshot.data;
-
-          if(_forcast == null)
-          {
+          if (_forcast == null) {
             return Text("Error getting weather");
+          } else {
+            return dailyBoxes(_forcast);
           }
-          else{
-            //return dailyBoxes(_forcast);
-          }
-        }
-        else{
+        } else {
           return Center(child: CircularProgressIndicator());
         }
       },
+      future: getForecast(location),
     );
   }
 
@@ -128,8 +119,18 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
           height: 160.0,
           decoration: BoxDecoration(
             color: Colors.amberAccent,
-            borderRadius: BorderRadius.all(Radius.circular(20))
-          ),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        ),
+
+        ClipPath(
+          clipper: Clipper(),
+          child: Container(
+            padding: const EdgeInsets.all(15.0),
+            margin: const EdgeInsets.all(15.0),
+            height: 160.0,
+            decoration: BoxDecoration(
+              color: Colors.indigoAccent[400],
+              borderRadius: BorderRadius.all(Radius.circular(20))))
         ),
 
         Container(
@@ -137,8 +138,7 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
           margin: const EdgeInsets.all(15.0),
           height: 160.0,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20))
-          ),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
           child: Row(
             children: [
               Expanded(
@@ -195,28 +195,21 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
                           fontWeight: FontWeight.normal,
                           fontSize: 13,
                           color:  Colors.white),
-                    ),
-                  )
-                ]
-              ),
-            ],
-          )
+                      ),
+                    )
+                  ]
+                ),
+              ],
+            )
         )
-      ],
-    ); 
+      ]
+    );
   }
 
-  Widget weatherDetailBox(Weather _weather)
-  {
+  Widget weatherDetailBox(Weather _weather){
     return Container(
-      padding: const EdgeInsets.only(left:15,
-      top: 25,
-      bottom: 25,
-      right:15),
-      margin: const EdgeInsets.only(left:15,
-      top: 5,
-      bottom: 15,
-      right:15),
+      padding: const EdgeInsets.only(left: 15, top: 25, bottom: 25, right: 15),
+      margin: const EdgeInsets.only(left: 15, top: 5, bottom: 15, right: 15),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -262,7 +255,7 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
             child: Column(
               children: [
                 Container(child: Text(
-                  "Humidity",
+                  "${_weather.humidity.toInt()}%",
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
@@ -312,17 +305,141 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
     );
   }
 
+  Widget hourlyBoxes(Forcast _forcast){
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 0.0),
+      height: 150.0,
+      child: ListView.builder(
+        padding: const EdgeInsets.only(left: 8, top: 0, bottom: 0, right: 8),
+        scrollDirection: Axis.horizontal,
+        itemCount: _forcast.hourly.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            padding: const EdgeInsets.only(
+              left: 10, top: 15, bottom: 15, right: 10),
+            margin: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  offset: Offset(0, 1),
+                )
+              ]
+            ),
+
+              child: Column(
+                children: [
+                  Text(
+                    "${_forcast.hourly[index].temp}*",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 17,
+                      color: Colors.black),
+                  ),
+                  getWeatherIcon(_forcast.hourly[index].icon),
+                  Text(
+                    "${getTimeFromTimestamp(_forcast.hourly[index].date)}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      color: Colors.grey),
+                  )
+                ],
+              ),
+          );
+          
+        }
+      )
+    );
+  }
+
+  Widget dailyBoxes(Forcast _forcast){
+    return Expanded(
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        padding: 
+        const EdgeInsets.only(left:8, top: 0, bottom:0, right:8),
+        itemCount: _forcast.daily.length,
+        itemBuilder: (BuildContext context, int index){
+          return Container(
+            padding: const EdgeInsets.only(
+              left:10, top: 5, bottom:5, right:10),
+              margin:  const EdgeInsets.all(5),
+              child: Row(children: [
+                Expanded(child: Text(
+                  "${getDateFromTimestamp(_forcast.daily[index].date)}",
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                )),
+                Expanded(child: 
+                Text(
+                  "${_forcast.daily[index].high.toInt()}/${_forcast.daily[index].low.toInt()}",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ))
+              ]));
+            }
+      )
+    );
+  }
+
+  Widget createAppBar(Location location){
+    return Container(
+      padding:
+            const EdgeInsets.only(left: 20, top: 15, bottom: 15, right: 20),
+        margin: const EdgeInsets.only(
+            top: 35, left: 15.0, bottom: 15.0, right: 15.0),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(60)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3),
+              )
+            ]),
+      child: Row(
+        children: [
+          Text.rich(
+            TextSpan(
+              children: <TextSpan>[
+                TextSpan(
+                  text: '${location.city.capitalizedFirstOfEach}, ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                TextSpan(
+                  text: '${location.country.capitalizedFirstOfEach}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal, fontSize: 16)),
+              ]
+            )
+          ),
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: Colors.black,
+            size: 24.0,
+            semanticLabel: 'Tap to change location',
+          ),
+        ],
+      )
+    );
+  }
+
+
   Future getCurrentWeather(Location location) async 
   {
     // TODO: Make API Key secured
-
     // Removing Null Safty by using late
     
     late Weather weather;
-    String city = "St. Louis";
-
-    String units = 'imperial';
     String apiKey = "9b89af2c88ce9c7ac9a9f6200e249417";
+    String city = location.city;
+    String units = 'imperial';    
 
     var url = Uri.https('api.openweathermap.org', '/data/2.5/weather', {
               'q': city,
@@ -345,7 +462,7 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
   {
     late Forcast forcast;
 
-    String apiKey = "";
+    String apiKey = "9b89af2c88ce9c7ac9a9f6200e249417";
     String lat = location.lat;
     String lon = location.lon;
 
@@ -360,32 +477,67 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
     if (response.statusCode == 200) {
       forcast = Forcast.fromJson(jsonDecode(response.body));
     } else {
-      // TODO: Throw Error here
       print('Request failed with status: ${response.statusCode}.');
     }
   }
 
   // Normal Icon
-  Image getWeatherIcon(String _icon)
-  {
-    String path = 'assets/weather/';
+  Image getWeatherIcon(String _icon) {
+    String path = 'assets/icons/';
     String imageExtension = ".png";
     return Image.asset(
       path + _icon + imageExtension,
       width: 70,
       height: 70,
-      );
+    );
   }
 
   // Small Icon
-  Image getWeatherIconSmall(String _icon)
-  {
-    String path = 'assets/weather/';
+  Image getWeatherIconSmall(String _icon) {
+    String path = 'assets/icons/';
     String imageExtension = ".png";
     return Image.asset(
       path + _icon + imageExtension,
-      width: 30,
-      height: 30,
-      );
+      width: 40,
+      height: 40,
+    );
   }
+
+}
+
+class Clipper extends CustomClipper<Path>{
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(0, size.height - 20);
+
+    path.quadraticBezierTo((size.width / 6) * 1, (size.height / 2) + 15, 
+      (size.width / 3) * 1, size.height - 30);
+    path.quadraticBezierTo((size.width / 2) * 1, (size.height + 0), 
+      (size.width / 3) * 2, (size.height / 4) * 3);
+    path.quadraticBezierTo((size.width / 6) * 5, (size.height / 2) - 20, 
+      size.width, size.height - 60);
+    
+    path.lineTo(size.width, size.height - 60);
+    path.lineTo(0, size.height);
+    path.lineTo(0, size.height);
+
+    path.close();
+
+    return path;
+  }
+  @override
+  bool shouldReclip(Clipper oldClipper) => false;
+}
+
+String getTimeFromTimestamp(int timestamp){
+  var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  var formatter = new DateFormat('h:mm a');
+  return formatter.format(date);
+}
+
+String getDateFromTimestamp(int timestamp){
+  var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  var formatter = new DateFormat('E');
+  return formatter.format(date);
 }
