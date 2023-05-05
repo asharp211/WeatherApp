@@ -61,9 +61,25 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
+
   assets:
-    - assets/icons/
-    - assets/weather/
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\01d.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\01n.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\02d.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\02n.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\03d.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\03n.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\04d.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\04n.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\09d.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\09n.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\10d.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\10n.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\13d.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\13n.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\50d.png
+    - C:\Users\ashar\Documents\Flutter_Projects\WeatherApp\assets\icons\50n.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
